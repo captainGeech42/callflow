@@ -22,7 +22,13 @@ Currently, callflow only supports IDA Pro + Linux binaries. However, support for
 
 ## Analysis
 
-TBD
+For now, you can query the data via the Neo4j HTTP interface on port 7474. Here is a query to get you started:
+
+```cypher
+match (a)-[e:CALLS]->(b) return a, e, b
+```
+
+![Call graph in neo4j](/img/example_graph.png)
 
 ## Todo
 
