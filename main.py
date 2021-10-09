@@ -26,6 +26,10 @@ def get_args():
     import_parser = subparsers.add_parser("import", help="Import callflow JSON data", parents=[parent_parser], formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     import_parser.add_argument("-fp", "--path", help="Path to JSON file", required=True)
 
+    # reset args
+    reset_parser = subparsers.add_parser("reset", help="Delete all contents of the neo4j database", parents=[parent_parser])
+    reset_parser.add_argument("-f", help="Force (no confirm)", action="store_true")
+
     args = parser.parse_args()
     if len(sys.argv) == 1:
         parser.print_help()
@@ -48,6 +52,16 @@ def import_data(db: CallflowDb, path: str) -> bool:
 
     return True
 
+def reset_db(db: CallflowDb, force: bool):
+    if not force:
+        x = input("Are you sure? This will delete EVERYTHING in the neo4j database (y/n): ")
+        if x.lower() not in ("yes", "y"):
+            print("invalid input, exiting")
+            return
+
+    print("Deleting database contents")
+    db.delete_contents()
+
 def main():
     args = get_args()
     if args is None:
@@ -65,6 +79,8 @@ def main():
         if not import_data(db, args.path):
             db.close()
             return 1
+    elif args.command == "reset":
+        reset_db(db, args.f)
     
     db.close()
 

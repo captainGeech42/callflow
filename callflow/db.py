@@ -29,6 +29,10 @@ class CallflowDb:
                     call.set_id(id)
 
         return binary.id
+
+    def delete_contents(self):
+        with self.driver.session() as s:
+            s.write_transaction(self._delete_db_contents)
     
     @staticmethod
     def _create_and_return_binary(tx, binary: Binary) -> int:
@@ -71,3 +75,7 @@ class CallflowDb:
                         src_va = call.src_va)
         
         return result.single()[0]
+
+    @staticmethod
+    def _delete_db_contents(tx):
+        tx.run("MATCH (a) DETACH DELETE a")
