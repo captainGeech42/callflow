@@ -1,9 +1,29 @@
 # callflow
 Binary function flow analyzer
 
-plugins will:
-* get a list of functions
-* go through the function and find everything they call
-* send data to server, which will store that data in the neo4j db
+## Setup
 
-add an "implied call" or something between __libc_start_main and main
+Start a Neo4j database:
+
+```
+$ docker-compose up -d
+```
+
+Now you are ready to import data.
+
+## Data Collection
+
+Currently, callflow only supports IDA Pro + Linux binaries. However, support for Windows binaries and Ghidra/Binary Ninja is WIP.
+
+1. Load your target binary in IDA Pro
+2. Start the callflow server: `python main.py server`. This will listen on `localhost:8300`.
+3. Load the IDA Python plugin at `ida/export_func_data.py`
+    * If you copy this file elsewhere, make sure to bring a copy of `callflow/model.py` and put it in the same directory. The `ida/model.py` is a relative symlink.
+
+## Analysis
+
+TBD
+
+## Todo
+
+- [ ] add an "implied call" or something between `__libc_start_main` and `main`
