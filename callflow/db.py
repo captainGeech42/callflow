@@ -4,7 +4,8 @@ from .model import Binary, Function, Call
 
 # https://neo4j.com/developer/python/
 class CallflowDb:
-    def __init__(self, uri: str, user: str, password: str):
+    def __init__(self, host: str, port: int, user: str, password: str):
+        uri = f"bolt://{host}:{port}"
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
     def close(self):
@@ -24,7 +25,6 @@ class CallflowDb:
             # add the call edges
             for func in binary.functions:
                 for call in func.calls:
-                    print(f"adding call: {call}")
                     id = s.write_transaction(self._create_and_return_call, binary, func, call)
                     call.set_id(id)
 
